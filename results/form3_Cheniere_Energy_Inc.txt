@@ -1,0 +1,9 @@
+{
+  "insider_name": "PEAK SCOTT BENNETT",
+  "insider_role": [
+    "Director"
+  ],
+  "company_name": "Cheniere Energy, Inc.",
+  "company_cik": "0000003570",
+  "filing_date": "2022-04-07"
+}
