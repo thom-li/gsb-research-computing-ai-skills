@@ -1,0 +1,37 @@
+name: Guard student artifacts
+
+# Day 1 has students commit my_first_commit.txt to their fork, and ./cast
+# commits quest_log.json to theirs so the leaderboard can read it. Both files
+# belong in forks and never in the class repo -- but a fork branch carrying
+# them looks like an ordinary PR, and #198 was merged that way by accident.
+# This check turns that into an obvious red X instead of a quiet merge.
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail if the PR touches student exercise artifacts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          artifacts=$(gh api "repos/${{ github.repository }}/pulls/$PR/files" \
+              --paginate --jq '.[].filename' \
+            | grep -Ex 'quest_log\.json|my_first_commit\.txt' || true)
+
+          if [[ -n "$artifacts" ]]; then
+            echo "::error::This PR adds student exercise artifacts, which belong in your fork -- not in the class repo:"
+            printf '  %s\n' $artifacts
+            echo
+            echo "Drop them from this branch and push again, or close the PR:"
+            echo "  git rm --cached <file> && git commit -m 'Drop exercise artifacts'"
+            exit 1
+          fi
+
+          echo "No student exercise artifacts in this PR."

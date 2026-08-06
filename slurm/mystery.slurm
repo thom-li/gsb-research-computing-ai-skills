@@ -1,5 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=mystery-watch
+#SBATCH --partition=normal
 #SBATCH --output=logs/mystery_%j.out
 #SBATCH --error=logs/mystery_%j.err
 #SBATCH --time=00:05:00

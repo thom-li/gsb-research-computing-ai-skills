@@ -34,8 +34,12 @@ You already built `slurm/extract_form_3_batch.slurm` for **10 filings** on the S
 
 ### 3. Submit and confirm it ran
 
+{: .note }
+> **Today only:** keep the class reservation flag — `--reservation=class_day3` — on your `sbatch` so the job runs on the reserved nodes. Drop it for your own work after today.
+
 ```bash
-sbatch slurm/extract_form_3_batch.slurm
+sbatch --reservation=class_day3 \
+  slurm/extract_form_3_batch.slurm
 squeue --me
 ```
 

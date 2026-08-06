@@ -1,5 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=extract-broken
+#SBATCH --partition=normal
 #SBATCH --output=logs/extract_broken_%j.out
 #SBATCH --error=logs/extract_broken_%j.err
 #SBATCH --time=00:05:00

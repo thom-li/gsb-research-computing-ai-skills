@@ -82,6 +82,7 @@ These are instructions to the Slurm scheduler — add them at the top of the fil
 
 ```bash
 #SBATCH --job-name=<job-name>
+#SBATCH --partition=normal
 #SBATCH --output=logs/extract_%j.out
 #SBATCH --error=logs/extract_%j.err
 #SBATCH --time=<HH:MM:SS>
@@ -92,6 +93,7 @@ These are instructions to the Slurm scheduler — add them at the top of the fil
 What each one is:
 
 - `--job-name` — a short label **you pick** so you can spot this job in the queue (e.g. `form3-extract`). It doesn't affect resources; name it whatever's memorable.
+- `--partition` — the queue the job runs in. `normal` is the production partition; each partition has its own time limits and resource caps (see the [current partitions and their limits](https://rcpedia.stanford.edu/_user_guide/slurm/#current-partitions-and-their-limits)).
 - `--output` / `--error` — files where the job's normal output and errors get written; `%j` is auto-filled with the job ID, so each run gets its own log. **Leave these as-is.**
 - `--time`, `--mem`, `--cpus-per-task` — the resources you're **requesting**. Fill these in from the **time**, **RAM**, and **CPU cores** you recorded in your Profiling README.
 
@@ -144,29 +146,30 @@ This runs the **10-filing batch you profiled** — `scripts/extract_form_3_batch
 
 Save the file. Here's the whole script, with its four parts labeled:
 
-<svg viewBox="0 0 700 272" role="img" aria-labelledby="anatomy-title" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;max-width:700px;height:auto;margin:0.5rem auto" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+<svg viewBox="0 0 700 292" role="img" aria-labelledby="anatomy-title" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;max-width:700px;height:auto;margin:0.5rem auto" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
   <title id="anatomy-title">The anatomy of a Slurm batch script: the shebang, the #SBATCH resource directives, the environment setup, and the run line(s) that do the work.</title>
-  <rect x="16" y="10" width="440" height="252" rx="10" fill="#fbfcfe" stroke="#d5d8e2" stroke-width="1.5"/>
+  <rect x="16" y="10" width="440" height="272" rx="10" fill="#fbfcfe" stroke="#d5d8e2" stroke-width="1.5"/>
   <rect x="18" y="22" width="436" height="22" fill="#f3f4f7"/>
-  <rect x="18" y="58" width="436" height="124" fill="#fdf0e3"/>
-  <rect x="18" y="194" width="436" height="44" fill="#eaf1fb"/>
-  <rect x="18" y="240" width="436" height="22" fill="#e9f5ee"/>
+  <rect x="18" y="58" width="436" height="144" fill="#fdf0e3"/>
+  <rect x="18" y="214" width="436" height="44" fill="#eaf1fb"/>
+  <rect x="18" y="260" width="436" height="22" fill="#e9f5ee"/>
   <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#3a4452">
     <text x="32" y="38">#!/bin/bash</text>
     <text x="32" y="76">#SBATCH --job-name=&lt;job-name&gt;</text>
-    <text x="32" y="96">#SBATCH --output=logs/extract_%j.out</text>
-    <text x="32" y="116">#SBATCH --error=logs/extract_%j.err</text>
-    <text x="32" y="136">#SBATCH --time=&lt;HH:MM:SS&gt;</text>
-    <text x="32" y="156">#SBATCH --mem=&lt;RAM&gt;</text>
-    <text x="32" y="176">#SBATCH --cpus-per-task=&lt;cores&gt;</text>
-    <text x="32" y="212">cd $HOME/gsb-research-computing-ai-skills</text>
-    <text x="32" y="232">source .venv/bin/activate</text>
-    <text x="32" y="256">python scripts/extract_form_3_batch.py</text>
+    <text x="32" y="96">#SBATCH --partition=normal</text>
+    <text x="32" y="116">#SBATCH --output=logs/extract_%j.out</text>
+    <text x="32" y="136">#SBATCH --error=logs/extract_%j.err</text>
+    <text x="32" y="156">#SBATCH --time=&lt;HH:MM:SS&gt;</text>
+    <text x="32" y="176">#SBATCH --mem=&lt;RAM&gt;</text>
+    <text x="32" y="196">#SBATCH --cpus-per-task=&lt;cores&gt;</text>
+    <text x="32" y="232">cd $HOME/gsb-research-computing-ai-skills</text>
+    <text x="32" y="252">source .venv/bin/activate</text>
+    <text x="32" y="276">python scripts/extract_form_3_batch.py</text>
   </g>
   <circle cx="472" cy="33" r="6" fill="#8a94a6"/><text x="486" y="38" font-size="13.5" font-weight="700" fill="#2c3e50">shebang — the interpreter</text>
-  <circle cx="472" cy="120" r="6" fill="#e67e22"/><text x="486" y="116" font-size="13.5" font-weight="700" fill="#2c3e50">#SBATCH — requests to the</text><text x="486" y="135" font-size="12.5" fill="#6a7280">scheduler (not commands)</text>
-  <circle cx="472" cy="216" r="6" fill="#3a76c4"/><text x="486" y="212" font-size="13.5" font-weight="700" fill="#2c3e50">environment setup —</text><text x="486" y="231" font-size="12.5" fill="#6a7280">cd + activate venv, on the node</text>
-  <circle cx="472" cy="256" r="6" fill="#2e8b57"/><text x="486" y="260" font-size="13.5" font-weight="700" fill="#2c3e50">run line(s) — your command(s)</text>
+  <circle cx="472" cy="130" r="6" fill="#e67e22"/><text x="486" y="126" font-size="13.5" font-weight="700" fill="#2c3e50">#SBATCH — requests to the</text><text x="486" y="145" font-size="12.5" fill="#6a7280">scheduler (not commands)</text>
+  <circle cx="472" cy="236" r="6" fill="#3a76c4"/><text x="486" y="232" font-size="13.5" font-weight="700" fill="#2c3e50">environment setup —</text><text x="486" y="251" font-size="12.5" fill="#6a7280">cd + activate venv, on the node</text>
+  <circle cx="472" cy="276" r="6" fill="#2e8b57"/><text x="486" y="280" font-size="13.5" font-weight="700" fill="#2c3e50">run line(s) — your command(s)</text>
 </svg>
 
 *Every Slurm script has these four parts: the **shebang**, the **`#SBATCH`** directives (requests to the scheduler, not commands that run), the **environment setup** that runs on the compute node, and the **run line(s)** that do the actual work.*
@@ -183,8 +186,12 @@ Save the file. Here's the whole script, with its four parts labeled:
 
 ## Submit
 
+{: .important }
+> **Today only:** this class has a dedicated Slurm reservation, `class_day3`. Add `--reservation=class_day3` to every `sbatch` (and `srun`) command today so your jobs run on the reserved nodes. It's a class-day flag — drop it for your own work after today.
+
 ```bash
-sbatch slurm/extract_form_3_batch.slurm
+sbatch --reservation=class_day3 \
+  slurm/extract_form_3_batch.slurm
 # Submitted batch job 12345678
 ```
 
@@ -241,7 +248,8 @@ squeue --me
 Resubmit:
 
 ```bash
-sbatch slurm/extract_form_3_batch.slurm
+sbatch --reservation=class_day3 \
+  slurm/extract_form_3_batch.slurm
 ```
 
 Once your job runs, check your inbox. You should receive two emails: one when the job **starts** and one when it **ends**. The start email tells you when it began — compare that to when you submitted to see how long it **waited in the queue**. The end email includes a **utilization summary** (how much CPU time and memory the job actually used) and the job's **exit status**: `0` means success; any other value means it failed.
@@ -290,7 +298,7 @@ cat logs/extract_*.err
 Submit it:
 
 ```bash
-sbatch slurm/mystery.slurm
+sbatch --reservation=class_day3 slurm/mystery.slurm
 ```
 
 While your job is running you can SSH to the node it's on and watch it work. (Nodes are **shared** — other users' jobs run on them too — but your job has its own **dedicated cores and RAM**.)
@@ -330,7 +338,7 @@ You'll see the mystery script's Python workers pinning the cores you requested. 
 Everything so far has been batch submission — write a script, `sbatch` it, wait. Slurm also supports an interactive allocation on a dedicated node — handy when you're debugging and re-running over and over: you hold the allocation, so you don't re-queue for resources every time a job fails and you fix it:
 
 ```bash
-srun --pty --cpus-per-task=2 --mem=4G --time=00:30:00 bash
+srun --reservation=class_day3 --pty --cpus-per-task=2 --mem=4G --time=00:30:00 bash
 ```
 
 Your interactive session is a Slurm job like any other — run `squeue --me` and you'll see it listed (state `R`) until you release it:
@@ -386,7 +394,7 @@ Your repo ships a few Slurm scripts that are **deliberately broken**. Fix them o
 Submit the first one:
 
 ```bash
-sbatch slurm/fix_me.slurm
+sbatch --reservation=class_day3 slurm/fix_me.slurm
 ```
 
 Watch it move through the queue — `PD` (pending), then `R` (running), then gone once it finishes:
@@ -428,7 +436,7 @@ Then resubmit — **keep debugging and resubmitting until the Slurm email says t
 Same drill, a different setup mistake. Submit it, watch it fail, and read its error log:
 
 ```bash
-sbatch slurm/fix_me_2.slurm
+sbatch --reservation=class_day3 slurm/fix_me_2.slurm
 squeue --me
 cat logs/fix_me_2_*.err
 ```
@@ -442,7 +450,7 @@ Troubleshoot with Claude in plan mode (`> Help me troubleshoot logs/fix_me_2_*.e
 One more, hiding yet another setup mistake. Same process:
 
 ```bash
-sbatch slurm/fix_me_3.slurm
+sbatch --reservation=class_day3 slurm/fix_me_3.slurm
 squeue --me
 cat logs/fix_me_3_*.err
 ```
@@ -479,13 +487,13 @@ cat slurm/chain_step1.slurm slurm/chain_step2.slurm
 **Step 3 — submit both back-to-back.** Step 1 runs for ~2 minutes, so fire them off one after the other and let it crunch while step 2 queues behind it. Submit step 1 and note the `JOBID` it prints:
 
 ```bash
-sbatch slurm/chain_step1.slurm
+sbatch --reservation=class_day3 slurm/chain_step1.slurm
 ```
 
 Then submit step 2 right away, chained to the first — replace `JOBID` with step 1's ID:
 
 ```bash
-sbatch --dependency=afterok:JOBID slurm/chain_step2.slurm
+sbatch --reservation=class_day3 --dependency=afterok:JOBID slurm/chain_step2.slurm
 ```
 
 **Step 4 — watch the queue.** Both jobs are in, but step 2 waits its turn. `watch` re-runs a command every couple of seconds, so you can see the handoff happen live:
@@ -519,7 +527,7 @@ The Yens have a dedicated **`dev` partition** for short, interactive debugging j
 Fire a quick throwaway job at `dev` with `-p dev` (and `--wrap`, which runs an inline command as a job). It's tiny, so it schedules fast, and it emails you when it finishes:
 
 ```bash
-sbatch -p dev --mail-type=ALL --mail-user=SUNetID@stanford.edu --wrap="hostname; sleep 30"
+sbatch --reservation=class_day3 -p dev --mail-type=ALL --mail-user=SUNetID@stanford.edu --wrap="hostname; sleep 30"
 ```
 
 Watch it — `dev` usually starts right away:

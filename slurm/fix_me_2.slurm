@@ -1,5 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=fix-me-2
+#SBATCH --partition=normal
 #SBATCH --output=logs/fix_me_2_%j.out
 #SBATCH --error=logs/fix_me_2_%j.err
 #SBATCH --time=00:05:00

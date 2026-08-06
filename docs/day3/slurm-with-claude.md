@@ -124,7 +124,7 @@ Skills shine when Claude follows *your* world's conventions instead of generic d
 
 **Step 1 — work with Claude until the figure looks right.** Ask it to make and run a small plotting job:
 
-> Write `scripts/plot_letter_distribution.py` that reads every JSON in `results/` and counts how often each letter a–z appears across all the extracted text fields (`insider_name`, `company_name`, and the roles). Save a bar chart to a new `figures/` directory (`figures/letter_distribution.png`), creating the directory if it doesn't exist. Use our Stanford palette: cardinal-red (`#8C1515`) bars, Stanford-black (`#2E2D29`) title and axis labels, white background. Then write `slurm/plot.slurm` to run it on the `dev` partition, and submit it.
+> Write `scripts/plot_letter_distribution.py` that reads every JSON in `results/` and counts how often each letter a–z appears across all the extracted text fields (`insider_name`, `company_name`, and the roles). Save a bar chart to a new `figures/` directory (`figures/letter_distribution.png`), creating the directory if it doesn't exist. Use our Stanford palette: cardinal-red (`#8C1515`) bars, Stanford-black (`#2E2D29`) title and axis labels, white background. Then write `slurm/plot.slurm` to run it on the `dev` partition, and submit it with today's class reservation: `sbatch --reservation=class_day3 slurm/plot.slurm`.
 
 Iterate with Claude on colours, title, and axis labels until you like it. (Open `figures/letter_distribution.png` in JupyterHub to see it.)
 

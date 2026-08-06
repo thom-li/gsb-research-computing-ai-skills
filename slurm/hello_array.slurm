@@ -1,5 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=hello-array
+#SBATCH --partition=normal
 #SBATCH --output=logs/hello_%A_%a.out
 #SBATCH --error=logs/hello_%A_%a.err
 #SBATCH --time=00:01:00
